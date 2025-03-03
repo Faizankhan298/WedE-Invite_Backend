@@ -3,19 +3,14 @@ import cors from "cors";
 import mongoose from "mongoose";
 import invitationRoutes from "./routes/invitations.js";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";  // Import this to get __dirname
-
-// Define __dirname manually for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Express app config
+dotenv.config();
 const app = express();
+
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-dotenv.config();
 
 if (!process.env.MONGO_URI) {
   console.error("MONGO_URI not set in .env");
@@ -36,19 +31,15 @@ mongoose
 // Routes
 app.use("/api/invitations", invitationRoutes);
 
-// Serve static files in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/build")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-  });
-}
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
+});
+
+// Health check route
+app.get("/", (req, res) => {
+  res.send("API is running....");
 });
 
 // Server start
