@@ -4,6 +4,11 @@ import mongoose from "mongoose";
 import invitationRoutes from "./routes/invitations.js";
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";  // Import this to get __dirname
+
+// Define __dirname manually for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Express app config
 const app = express();
